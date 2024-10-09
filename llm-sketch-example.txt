@@ -1,0 +1,34 @@
+<code_sketch>
+    [file]: LLM.ts
+    [purpose]: to act as an abstraction over a variety of possible LLM 'services,' which might be network APIs like OpenAI or Anthropic or OpenRouter, or might be some method of invoking an LLM locally—perhaps through a shell command invoking Ollama.
+    [target_lang]: Typescript
+    [custom_config]: {
+        comments: terse but fairly complete
+        styleInspiration: react core source code
+    }
+
+
+    <sketch>
+        // general note: use OpenAI and Anthropic SDKs to actually run inferences
+
+        class LLM {
+            // insert: enum for LLM providers; choose appropriate name. Should include entries for OpenAI, and Anthropic
+            // insert: LLMConfig type; we need to parameterize this via an array of providers; the generated type should be the intersection of the listed providers. This means each provider will need its own base config type, from which this one will be computed
+            // insert: an "InferenceResult" type, has an id, result, and indicates error vs success
+
+            constructor(apiKeys: Map<inserted LLm provider enum, string>) {
+
+            }
+
+            infer(prompt, systemPrompt, config: LLMConfig /*this should be the computed config type*/) {
+                // the config param should have sensible defaults when user doesn't explicitly define something
+            }
+
+            getActiveInferences() // should return an array of Promise<InferenceResult> for each still-running inference
+            getErrorInferences()
+            removeErrorInference(id)
+            cancelInference(id)
+            restartInference(id)
+        }
+    </sketch>
+</code_sketch>

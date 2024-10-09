@@ -1,0 +1,34 @@
+:root {
+  /* Colors */
+  --bg-color: #c4cfa1; /* Light Gameboy green */
+  --panel-bg: #8b956d; /* Slightly darker green for contrast */
+  --text-color: #1f1f1f; /* Dark grey, almost black */
+  --border-color: #1f1f1f; /* Dark grey for borders */
+  --button-text: #1f1f1f;
+  --hover-bg: #a1ad7f; /* Slightly lighter than panel-bg for hover effects */
+
+  /* Fonts */
+  --font-family: 'IBM Plex Mono', monospace;
+  --font-size-normal: 14px;
+  --font-size-large: 16px;
+
+  /* Spacing */
+  --spacing-small: 4px;
+  --spacing-medium: 8px;
+  --spacing-large: 16px;
+
+  /* Dimensions */
+  --app-width: 800px;
+  --app-height: 600px;
+
+  /* Transitions */
+  --transition-speed: 0.3s;
+
+  /* Shadows */
+  --box-shadow: 4px 4px 0px rgba(31, 31, 31, 0.5);
+
+  /* Tab specific */
+  --tab-inactive-bg: #7d8761; /* Slightly darker than panel-bg */
+  --tab-active-bg: var(--panel-bg);
+  --tab-border-radius: 5px 5px 0 0;
+}

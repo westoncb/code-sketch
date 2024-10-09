@@ -1,0 +1,20 @@
+{
+  "name": "code-sketch-app",
+  "version": "1.0.0",
+  "description": "An app for code sketching with LLM assistance",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "start": "concurrently \"npm run start:client\" \"npm run start:server\" \"npm run open:client\"",
+    "start:client": "cd packages/client && npm run dev",
+    "start:server": "cd packages/server && npm start",
+    "open:client": "node -e \"setTimeout(() => require('open')('http://localhost:3001'), 3000)\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "open": "^8.4.0",
+    "typescript": "^5.2.2"
+  }
+}
