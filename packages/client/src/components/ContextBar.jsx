@@ -47,7 +47,7 @@ const styles = {
 };
 
 function ContextBar() {
-  const contextItems = ['Context 1', 'Context 2', 'Context 3', 'Context 4', 'Context 5']; // Mock data
+  const contextItems = ['Context 1', 'Context 2']; // Mock data
   const scrollContainerRef = useRef(null);
 
   useEffect(() => {

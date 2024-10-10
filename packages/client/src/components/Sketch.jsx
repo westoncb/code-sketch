@@ -5,30 +5,25 @@ import Button from './Button';
 import ContextBar from './ContextBar';
 
 const styles = {
-  sketchContainer: {
+  container: {
     display: 'flex',
     flexDirection: 'column',
-    flex: 1,
-    overflow: 'hidden', // Prevent any potential overflow
+    height: '100%',
   },
-  codeEditorContainer: {
+  editor: {
     flex: 1,
-    overflow: 'hidden', // Hide overflow, let CodeMirror handle scrolling
-    borderBottom: '2px solid var(--border-color)',
+    overflow: 'auto',
   },
-  actionButtonsContainer: {
+  buttonPanel: {
     display: 'flex',
     justifyContent: 'center',
     padding: 'var(--spacing-medium)',
     borderTop: '2px solid var(--border-color)',
   },
-  button: {
-    margin: '0 var(--spacing-small)',
-  },
 };
 
-function Sketch() {
-  const editor = useRef();
+function Sketch({ onAction }) {
+  const editor = useRef(null);
 
   useEffect(() => {
     if (!editor.current) return;
@@ -50,13 +45,13 @@ function Sketch() {
   }, []);
 
   return (
-    <div style={styles.sketchContainer}>
-      <div style={styles.codeEditorContainer} ref={editor}></div>
-      <ContextBar />
-      <div style={styles.actionButtonsContainer}>
-        <Button style={styles.button} onClick={() => console.log('Check')}>check</Button>
-        <Button style={styles.button} onClick={() => console.log('Generate')}>generate</Button>
+    <div style={styles.container}>
+      <div ref={editor} style={styles.editor}></div>
+      <div style={styles.buttonPanel}>
+        <Button onClick={() => onAction('check')}>Check</Button>
+        <Button onClick={() => onAction('generate')}>Generate</Button>
       </div>
+      <ContextBar />
     </div>
   );
 }

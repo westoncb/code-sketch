@@ -5,7 +5,13 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "strict": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
-  }
+    "baseUrl": ".",
+    "paths": {
+      "@code-sketch/shared-types": ["packages/shared-types"]
+    }
+  },
+  "references": [
+    { "path": "./packages/shared-types" },
+    { "path": "./packages/server" }
+  ]
 }

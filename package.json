@@ -1,5 +1,5 @@
 {
-  "name": "code-sketch-app",
+  "name": "code-sketch",
   "version": "1.0.0",
   "description": "An app for code sketching with LLM assistance",
   "private": true,
@@ -7,13 +7,16 @@
     "packages/*"
   ],
   "scripts": {
-    "start": "concurrently \"npm run start:client\" \"npm run start:server\" \"npm run open:client\"",
+    "start": "npm-run-all --parallel start:*",
     "start:client": "cd packages/client && npm run dev",
     "start:server": "cd packages/server && npm start",
-    "open:client": "node -e \"setTimeout(() => require('open')('http://localhost:3001'), 3000)\""
+    "open:client": "node -e \"setTimeout(() => require('open')('http://localhost:3001'), 3000)\"",
+    "build": "tsc -b",
+    "build:shared-types": "tsc -b packages/shared-types",
+    "postinstall": "npm run build"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2",
+    "npm-run-all": "^4.1.5",
     "open": "^8.4.0",
     "typescript": "^5.2.2"
   }
