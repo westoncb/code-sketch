@@ -18,8 +18,8 @@
   --spacing-large: 16px;
 
   /* Dimensions */
-  --app-width: 800px;
-  --app-height: 600px;
+  --app-width: 95%;
+  --app-height: 95%;
 
   /* Transitions */
   --transition-speed: 0.3s;

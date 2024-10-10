@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from './Button';
 
 const styles = {
   tabBar: {
@@ -25,15 +26,11 @@ const styles = {
   },
   configButton: {
     marginLeft: 'auto',
-    padding: 'var(--spacing-small) var(--spacing-medium)',
-    border: '2px solid var(--border-color)',
-    backgroundColor: 'transparent',
-    color: 'var(--text-color)',
-    cursor: 'pointer',
+    marginBottom: "var(--spacing-medium)",
   },
 };
 
-function TabBar({ activeTab, setActiveTab }) {
+function TabBar({ activeTab, setActiveTab, onConfigClick }) {
   const tabs = ['sketch', 'review', 'code'];
 
   return (
@@ -50,9 +47,9 @@ function TabBar({ activeTab, setActiveTab }) {
           {tab}
         </div>
       ))}
-      <button style={styles.configButton} onClick={() => console.log('LLM Config')}>
+      <Button style={styles.configButton} onClick={onConfigClick}>
         LLM Config
-      </button>
+      </Button>
     </div>
   );
 }

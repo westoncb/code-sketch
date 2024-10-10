@@ -1,57 +1,80 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import Button from './Button';
 
 const styles = {
   contextBar: {
     display: 'flex',
-    flexDirection: 'column',
-    padding: 'var(--spacing-medium)',
-  },
-  header: {
-    display: 'flex',
     alignItems: 'center',
-    marginBottom: 'var(--spacing-small)',
+    padding: 'var(--spacing-medium)',
+    borderTop: '2px solid var(--border-color)',
   },
   title: {
     marginRight: 'var(--spacing-medium)',
     fontWeight: 'bold',
+    whiteSpace: 'nowrap',
   },
-  contextItems: {
+  addButton: {
+    marginRight: 'var(--spacing-medium)',
+    minWidth: 'auto',
+    padding: '2px 6px',
+  },
+  contextItemsContainer: {
     display: 'flex',
-    flexWrap: 'wrap',
+    overflowX: 'auto',
+    flexGrow: 1,
     gap: 'var(--spacing-small)',
+    paddingBottom: 'var(--spacing-small)', // Space for the scrollbar
   },
   contextItem: {
-    position: 'relative',
-    backgroundColor: 'var(--button-bg)',
-    color: 'var(--button-text)',
-    padding: 'var(--spacing-small) var(--spacing-medium) var(--spacing-small) var(--spacing-small)',
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: 'var(--tab-inactive-bg)',
+    border: '1px solid var(--border-color)',
+    color: 'var(--text-color)',
+    padding: '2px 6px',
     borderRadius: '3px',
+    whiteSpace: 'nowrap',
   },
   closeButton: {
-    position: 'absolute',
-    top: '2px',
-    right: '2px',
     background: 'none',
     border: 'none',
-    color: 'var(--button-text)',
+    color: 'var(--text-color)',
     cursor: 'pointer',
-    fontSize: '12px',
-    padding: '0',
+    fontSize: '14px',
+    padding: '0 0 0 4px',
+    marginLeft: '4px',
   },
 };
 
 function ContextBar() {
-  // This is just mock data for now
-  const contextItems = ['Context 1', 'Context 2', 'Context 3'];
+  const contextItems = ['Context 1', 'Context 2', 'Context 3', 'Context 4', 'Context 5']; // Mock data
+  const scrollContainerRef = useRef(null);
+
+  useEffect(() => {
+    const handleWheel = (e) => {
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollLeft += e.deltaY;
+        e.preventDefault();
+      }
+    };
+
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener('wheel', handleWheel, { passive: false });
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener('wheel', handleWheel);
+      }
+    };
+  }, []);
 
   return (
     <div style={styles.contextBar}>
-      <div style={styles.header}>
-        <span style={styles.title}>context:</span>
-        <Button onClick={() => console.log('Add context')}>+</Button>
-      </div>
-      <div style={styles.contextItems}>
+      <span style={styles.title}>context:</span>
+      <Button style={styles.addButton} onClick={() => console.log('Add context')}>+</Button>
+      <div style={styles.contextItemsContainer} ref={scrollContainerRef}>
         {contextItems.map((item, index) => (
           <div key={index} style={styles.contextItem}>
             {item}
