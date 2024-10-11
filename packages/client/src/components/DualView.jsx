@@ -3,6 +3,9 @@ import Sketch from './Sketch';
 import Review from './Review';
 import Code from './Code';
 import Waiting from './Waiting';
+import useStore from '../store';
+import MiniStatus from './MiniStatus';
+import { ResultPanel } from '../client-types';
 
 const styles = {
   container: {
@@ -12,6 +15,7 @@ const styles = {
   },
   panel: {
     flex: 1,
+    position: "relative",
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: 'var(--panel-bg)',
@@ -34,34 +38,25 @@ const styles = {
 };
 
 function DualView() {
-  const [rightView, setRightView] = useState('waiting');
-  const [code, setCode] = useState('');
+  const activeResultPanel = useStore(state => state.activeResultPanel)
+  const miniStatus = useStore(state => state.miniStatus);
 
-  const handleSketchAction = (action) => {
-    if (action.type === 'check') {
-      setRightView('review');
-    } else if (action.type === 'generate') {
-      setRightView('code');
-      setCode(action.result.data.result)
-    }
-  };
-
-  const getRightContent = (text) => {
-    switch (rightView) {
-      case 'review':
+  const getRightContent = () => {
+    switch (activeResultPanel) {
+      case ResultPanel.review:
         return <Review />;
-      case 'code':
-        return <Code text={text} />;
+      case ResultPanel.code:
+        return <Code/>;
       default:
         return <Waiting />;
     }
   };
 
   const getRightTitle = () => {
-    switch (rightView) {
-      case 'review':
+    switch (activeResultPanel) {
+      case ResultPanel.review:
         return 'Review';
-      case 'code':
+      case ResultPanel.code:
         return 'Code';
       default:
         return 'Ready to check or generate';
@@ -70,16 +65,25 @@ function DualView() {
 
   return (
     <div style={styles.container}>
+      {miniStatus?.displayRegion === "center" &&
+        <MiniStatus config={miniStatus}/>
+      }
       <div style={styles.panel}>
+        {miniStatus?.displayRegion === "left" &&
+          <MiniStatus config={miniStatus}/>
+        }
         <div style={styles.title}>Sketch</div>
         <div style={styles.content}>
-          <Sketch onAction={handleSketchAction} />
+          <Sketch/>
         </div>
       </div>
       <div style={styles.panel}>
+        {miniStatus?.displayRegion === "right" &&
+          <MiniStatus config={miniStatus}/>
+        }
         <div style={styles.title}>{getRightTitle()}</div>
         <div style={styles.content}>
-          {getRightContent(code)}
+          {getRightContent()}
         </div>
       </div>
     </div>

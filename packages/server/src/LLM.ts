@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import Anthropic from '@anthropic-ai/sdk';
-import { LLMProvider, InferenceResult } from '@code-sketch/shared-types';
+import { LLMProvider, InferenceResult, AnthropicModels, OpenAIModels } from '@code-sketch/shared-types';
 import axios from 'axios';
 
 class LLM {
@@ -30,9 +30,9 @@ class LLM {
       case LLMProvider.Ollama:
         return this.listModels();
       case LLMProvider.OpenAI:
-        return ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-32k'];
+        return OpenAIModels;
       case LLMProvider.Anthropic:
-        return ['claude-3-5-sonnet-20240620', 'claude-3-opus-20240229', 'claude-3-haiku-20240307', 'claude-3-sonnet-20240229'];
+        return AnthropicModels;
       default:
         throw new Error('Unsupported provider');
     }

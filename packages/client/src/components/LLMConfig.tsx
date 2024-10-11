@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { LLMProvider } from '@code-sketch/shared-types';
 import axios from 'axios';
 import Button from './Button';
-import StatusLoadingIndicator from './StatusLoadingIndicator';
+import MiniStatus from './MiniStatus';
+import useStore from '../store';
 
 const styles = {
   form: {
@@ -37,7 +38,10 @@ const styles = {
 const LLMConfig: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [provider, setProvider] = useState<LLMProvider>(LLMProvider.Anthropic);
   const [modelName, setModelName] = useState('');
-  const [status, setStatus] = useState<string | null>(null);
+  const { miniStatus, setMiniStatus } = useStore(state => ({
+    miniStatus: state.miniStatus,
+    setMiniStatus: state.setMiniStatus
+  }));
   const [availableModels, setAvailableModels] = useState<string[]>([]);
 
   useEffect(() => {
@@ -63,11 +67,11 @@ const LLMConfig: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       let response;
       switch (provider) {
         case LLMProvider.Ollama:
-          setStatus(`Attempting to load ${provider} model: ${modelName}`);
+          setMiniStatus({message: `Attempting to load ${provider} model: ${modelName}`, showSpinner: true});
           response = await axios.post('/api/select-model', { provider, modelName });
-          setStatus('Model loaded successfully');
+          setMiniStatus({message: 'Model loaded successfully'});
           setTimeout(() => {
-            setStatus(null);
+            setMiniStatus(null);
             onClose(); // Close the LLMConfig dialog
           }, 1000);
           break;
@@ -85,15 +89,15 @@ const LLMConfig: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           throw new Error('Unsupported provider');
       }
     } catch (error) {
-      setStatus('Error selecting model');
+      setMiniStatus({message: 'Error selecting model', onConfirm: () => {}});
       console.error('Error selecting model:', error);
-      setTimeout(() => setStatus(null), 1000);
+      setTimeout(() => setMiniStatus(null), 1000);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} style={styles.form}>
-      <StatusLoadingIndicator status={status} />
+      <MiniStatus config={miniStatus}/>
       <div style={styles.row}>
         <label style={styles.label}>Provider:</label>
         <select

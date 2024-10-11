@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { EditorView, basicSetup } from 'codemirror';
 import { oneDark } from '@codemirror/theme-one-dark';
+import useStore from '../store';
 
 const styles = {
   container: {
@@ -20,16 +21,15 @@ const styles = {
   },
 };
 
-function Code({text}) {
+function Code() {
+  const code = useStore(state => state.code);
   const editor = useRef(null);
-
-  console.log("got that text comin thru", text);
 
   useEffect(() => {
     if (!editor.current) return;
 
     const view = new EditorView({
-      doc: text || '// Code content will appear here',
+      doc: code || '',
       extensions: [
         basicSetup,
         oneDark,

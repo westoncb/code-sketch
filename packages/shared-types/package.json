@@ -5,9 +5,12 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "tsc-watch --onSuccess \"echo Compilation successful\"",
+    "start": "npm run dev"
   },
   "devDependencies": {
+    "tsc-watch": "^6.2.0",
     "typescript": "^5.2.2"
   }
 }

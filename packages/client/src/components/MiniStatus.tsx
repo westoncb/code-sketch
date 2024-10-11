@@ -1,17 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, CSSProperties } from 'react';
+import { MiniStatusConfig } from '../client-types';
+import Button from "./Button";
+import useStore from '../store';
 
-const styles = {
+const styles: { [key: string]: CSSProperties } = {
   overlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(196, 207, 161, 0.4)', // Semi-transparent bg-color
+    backgroundColor: 'rgba(196, 207, 161, 0.35)', // Semi-transparent bg-color
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 1000,
+    zIndex: 50,
   },
   popup: {
     backgroundColor: 'rgba(139, 149, 109, 0.9)', // Semi-transparent panel-bg
@@ -25,49 +28,53 @@ const styles = {
     gap: 'var(--spacing-medium)',
   },
   canvas: {
-    width: '64px',
-    height: '64px',
+    width: 64,
+    height: 64,
     border: '1px solid var(--border-color)',
   },
-  statusText: {
+  message: {
     fontFamily: 'var(--font-family)',
     fontSize: 'var(--font-size-normal)',
     color: 'var(--text-color)',
     textAlign: 'center',
-    maxWidth: '200px',
+    maxWidth: 200,
+  },
+  button: {
+    marginTop: 'var(--spacing-medium)',
   },
 };
 
-const LoadingIndicator = ({ status }) => {
-  const canvasRef = useRef(null);
+const MiniStatus: React.FC<{ config: MiniStatusConfig }> = ({config}) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [frame, setFrame] = useState(0);
+  const setMiniStatus = useStore(state => state.setMiniStatus);
 
   useEffect(() => {
-    if (status === null) return;
+    if (!config || !config.showSpinner) return;
 
     const intervalId = setInterval(() => {
-      setFrame(prevFrame => (prevFrame + 1) % 16); // 16 frames for a complete cycle
-    }, 100); // Update every 100ms
+      setFrame(prevFrame => (prevFrame + 1) % 16);
+    }, 100);
 
     return () => clearInterval(intervalId);
-  }, [status]);
+  }, [config]);
 
   useEffect(() => {
-    if (status === null) return;
+    if (!config || !config.showSpinner) return;
 
     const canvas = canvasRef.current;
+    if (!canvas) return;
+
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    // Gameboy-inspired colors
-    const lightColor = '#c4cfa1'; // Light green
-    const darkColor = '#8b956d';  // Dark green
-
-    const stripeWidth = 8; // Width of each stripe
-    const stripeSpacing = stripeWidth * 2; // Space between stripes of the same color
+    const lightColor = '#c4cfa1';
+    const darkColor = '#8b956d';
+    const stripeWidth = 8;
+    const stripeSpacing = stripeWidth * 2;
 
     ctx.clearRect(0, 0, 64, 64);
 
-    // Draw diagonal stripes
     for (let i = -64; i < 64 * 2; i += stripeSpacing) {
       ctx.beginPath();
       ctx.moveTo(i + frame * 2, 0);
@@ -84,25 +91,41 @@ const LoadingIndicator = ({ status }) => {
       ctx.stroke();
     }
 
-    // Draw border
     ctx.strokeStyle = 'var(--border-color)';
     ctx.lineWidth = 2;
     ctx.strokeRect(0, 0, 64, 64);
+  }, [frame, config]);
 
-  }, [frame, status]);
+  // console.log("rendering!!", config)
 
-  if (status === null) {
-    return null;
+  if (!config) return null;
+
+  const { showSpinner, message, onConfirm } = config;
+
+  const confirmAndClose = () => {
+    setMiniStatus(null);
+    onConfirm()
   }
 
   return (
     <div style={styles.overlay}>
       <div style={styles.popup}>
-        <canvas ref={canvasRef} width="64" height="64" style={styles.canvas} />
-        {status && <div style={styles.statusText}>{status}</div>}
+        {showSpinner && (
+          <canvas ref={canvasRef} width={64} height={64} style={styles.canvas} />
+        )}
+        {message && (
+          <div style={styles.message}>
+            {message}
+          </div>
+        )}
+        {onConfirm && (
+          <Button onClick={confirmAndClose} style={styles.button}>
+            Okay
+          </Button>
+        )}
       </div>
     </div>
   );
 };
 
-export default LoadingIndicator;
+export default MiniStatus;

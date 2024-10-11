@@ -1,16 +1,19 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { EditorView, basicSetup } from 'codemirror';
 import { oneDark } from '@codemirror/theme-one-dark';
 import Button from './Button';
 import ContextBar from './ContextBar';
 import axios from 'axios';
 import { genCodePrompt } from '../prompts';
+import useStore from '../store';
+import { ResultPanel } from '../client-types';
 
 const styles = {
   container: {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
+    position: 'relative'
   },
   editor: {
     flex: 1,
@@ -24,8 +27,9 @@ const styles = {
   },
 };
 
-function Sketch({ onAction }) {
+function Sketch() {
   const editor = useRef(null);
+  const { setMiniStatus, setCode, setActiveResultPanel } = useStore();
 
   useEffect(() => {
     if (!editor.current) return;
@@ -51,18 +55,16 @@ function Sketch({ onAction }) {
 
   const generate = async () => {
     try {
+      setMiniStatus({ message: "Generating code from sketch..", displayRegion: "right", showSpinner: true });
       const response = await axios.post('/api/infer', {
         prompt,
-        systemPrompt,
-        config: {model: "llama3.2"}
+        systemPrompt
       });
-
-      onAction({ type: 'generate', result: response });
-      // setStatus(null);
-      console.log("RESPONSE", response);
+      setActiveResultPanel(ResultPanel.code)
+      setCode(response.data.result);
+      setMiniStatus(null);
     } catch (error) {
-      onAction({ type: 'generate', result: error });
-      // setStatus('Error generating code');
+      setMiniStatus({message: 'Error generating code', onConfirm: () =>{}});
       console.error('Error generating code:', error);
     }
   }
@@ -71,7 +73,7 @@ function Sketch({ onAction }) {
     <div style={styles.container}>
       <div ref={editor} style={styles.editor}></div>
       <div style={styles.buttonPanel}>
-        <Button onClick={() => onAction({type: 'check'})}>Check</Button>
+        <Button onClick={() => {}}>Check</Button>
         <Button onClick={generate}>Generate</Button>
       </div>
       <ContextBar />
