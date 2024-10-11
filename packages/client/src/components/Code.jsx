@@ -20,14 +20,16 @@ const styles = {
   },
 };
 
-function Code() {
+function Code({text}) {
   const editor = useRef(null);
+
+  console.log("got that text comin thru", text);
 
   useEffect(() => {
     if (!editor.current) return;
 
     const view = new EditorView({
-      doc: '// Code content will appear here',
+      doc: text || '// Code content will appear here',
       extensions: [
         basicSetup,
         oneDark,

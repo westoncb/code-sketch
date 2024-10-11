@@ -35,21 +35,23 @@ const styles = {
 
 function DualView() {
   const [rightView, setRightView] = useState('waiting');
+  const [code, setCode] = useState('');
 
   const handleSketchAction = (action) => {
-    if (action === 'check') {
+    if (action.type === 'check') {
       setRightView('review');
-    } else if (action === 'generate') {
+    } else if (action.type === 'generate') {
       setRightView('code');
+      setCode(action.result.data.result)
     }
   };
 
-  const getRightContent = () => {
+  const getRightContent = (text) => {
     switch (rightView) {
       case 'review':
         return <Review />;
       case 'code':
-        return <Code />;
+        return <Code text={text} />;
       default:
         return <Waiting />;
     }
@@ -77,7 +79,7 @@ function DualView() {
       <div style={styles.panel}>
         <div style={styles.title}>{getRightTitle()}</div>
         <div style={styles.content}>
-          {getRightContent()}
+          {getRightContent(code)}
         </div>
       </div>
     </div>

@@ -56,7 +56,7 @@ function App() {
         visible={isConfigVisible}
         onClose={() => setIsConfigVisible(false)}
       >
-        <LLMConfig/>
+        <LLMConfig onClose={() => setIsConfigVisible(false)}/>
       </ModalDialog>
       <ModalDialog
         title="Help"
