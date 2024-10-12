@@ -25,6 +25,7 @@ const styles = {
     backgroundColor: "rgba(0, 0, 0, 0.15)",
     borderRadius: "3px",
     padding: "5px",
+    fontWeight: "bold"
   },
   helpButton: {
     marginLeft: '2rem',

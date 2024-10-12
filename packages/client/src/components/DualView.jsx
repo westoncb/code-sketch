@@ -21,7 +21,7 @@ const styles = {
     backgroundColor: 'var(--panel-bg)',
     border: '2px solid var(--border-color)',
     boxShadow: 'var(--box-shadow)',
-    borderRadius: '5px',
+    borderRadius: '2px',
     overflow: 'hidden',
     marginBottom: "5px",
     marginRight: "5px"
