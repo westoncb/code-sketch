@@ -3,7 +3,7 @@ import DualView from './DualView';
 import FloatingToolbar from './FloatingToolbar';
 import ModalDialog from './ModalDialog';
 import '../styles/global.css';
-import LLMConfig from './LLMConfig';
+import LLMConfigPanel from './LLMConfigPanel';
 
 const styles = {
   appContainer: {
@@ -56,7 +56,7 @@ function App() {
         visible={isConfigVisible}
         onClose={() => setIsConfigVisible(false)}
       >
-        <LLMConfig onClose={() => setIsConfigVisible(false)}/>
+        <LLMConfigPanel onClose={() => setIsConfigVisible(false)}/>
       </ModalDialog>
       <ModalDialog
         title="Help"

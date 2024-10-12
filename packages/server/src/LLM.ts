@@ -131,6 +131,13 @@ class LLM {
     }
   }
 
+  getSelectedLLM() {
+    return {
+      provider: this.activeProvider,
+      modelName: this.activeModel
+    }
+  }
+
   private async listModels(): Promise<string[]> {
     try {
       const response = await axios.get(`${this.ollamaApiUrl}/tags`);

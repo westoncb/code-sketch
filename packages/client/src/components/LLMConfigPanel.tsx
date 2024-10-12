@@ -4,6 +4,7 @@ import axios from 'axios';
 import Button from './Button';
 import MiniStatus from './MiniStatus';
 import useStore from '../store';
+import useConfigStore, {LLMConfig} from '../stores/configStore';
 
 const styles = {
   form: {
@@ -11,12 +12,12 @@ const styles = {
     flexDirection: 'column',
     gap: 'var(--spacing-medium)',
     padding: 'var(--spacing-medium)',
-  } as React.CSSProperties,
+  },
   row: {
     display: 'flex',
     gap: 'var(--spacing-medium)',
     alignItems: 'center',
-  } as React.CSSProperties,
+  },
   select: {
     flex: 1,
     padding: 'var(--spacing-small)',
@@ -26,34 +27,41 @@ const styles = {
     fontFamily: 'var(--font-family)',
     fontSize: 'var(--font-size-normal)',
     color: 'var(--text-color)',
-  } as React.CSSProperties,
+  },
   label: {
     fontFamily: 'var(--font-family)',
     fontSize: 'var(--font-size-normal)',
     color: 'var(--text-color)',
     marginRight: 'var(--spacing-small)',
-  } as React.CSSProperties,
-};
+  },
+} as const;
 
-const LLMConfig: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-  const [provider, setProvider] = useState<LLMProvider>(LLMProvider.Anthropic);
-  const [modelName, setModelName] = useState('');
+interface LLMConfigProps {
+  onClose: () => void;
+}
+
+const LLMConfigPanel: React.FC<LLMConfigProps> = ({ onClose }) => {
+  const [availableModels, setAvailableModels] = useState<string[]>([]);
+
+  const setLLMConfig = useConfigStore((state) => state.setLLMConfig);
+  const llmConfig = useConfigStore((state) => state.llmConfig);
   const { miniStatus, setMiniStatus } = useStore(state => ({
     miniStatus: state.miniStatus,
     setMiniStatus: state.setMiniStatus
   }));
-  const [availableModels, setAvailableModels] = useState<string[]>([]);
 
   useEffect(() => {
     fetchAvailableModels();
-  }, [provider]);
+  }, [llmConfig.provider]);
 
   const fetchAvailableModels = async () => {
     try {
-      const response = await axios.get(`/api/available-models?provider=${provider}`);
+      const response = await axios.get(`/api/available-models?provider=${llmConfig.provider}`);
       const models = response.data.models;
-      setModelName(models[0]);
       setAvailableModels(models);
+      if (!models.includes(llmConfig.modelName)) {
+        setLLMConfig({ ...llmConfig, modelName: models[0] || '' });
+      }
     } catch (error) {
       console.error('Error fetching available models:', error);
       setAvailableModels([]);
@@ -64,47 +72,41 @@ const LLMConfig: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     e.preventDefault();
 
     try {
-      let response;
-      switch (provider) {
-        case LLMProvider.Ollama:
-          setMiniStatus({message: `Attempting to load ${provider} model: ${modelName}`, showSpinner: true});
-          response = await axios.post('/api/select-model', { provider, modelName });
-          setMiniStatus({message: 'Model loaded successfully'});
-          setTimeout(() => {
-            setMiniStatus(null);
-            onClose(); // Close the LLMConfig dialog
-          }, 1000);
-          break;
-        case LLMProvider.OpenAI:
-          // Placeholder for OpenAI logic
-          console.log('OpenAI model selection not implemented');
+      if (llmConfig.provider === LLMProvider.Ollama) {
+        setMiniStatus({ message: `Attempting to load ${llmConfig.provider} model: ${llmConfig.modelName}`, showSpinner: true });
+      }
+
+      await axios.post('/api/select-model', llmConfig);
+
+      setLLMConfig(llmConfig);
+
+      if (llmConfig.provider === LLMProvider.Ollama) {
+        setMiniStatus({ message: 'Model loaded successfully' });
+
+        setTimeout(() => {
+          setMiniStatus(null);
           onClose();
-          break;
-        case LLMProvider.Anthropic:
-          // Placeholder for Anthropic logic
-          response = await axios.post('/api/select-model', { provider, modelName });
-          onClose();
-          break;
-        default:
-          throw new Error('Unsupported provider');
+        }, 1000);
+      } else {
+        onClose();
       }
     } catch (error) {
-      setMiniStatus({message: 'Error selecting model', onConfirm: () => {}});
       console.error('Error selecting model:', error);
-      setTimeout(() => setMiniStatus(null), 1000);
+      if (llmConfig.provider === LLMProvider.Ollama) {
+        setMiniStatus({ message: 'Error selecting model', onConfirm: () => {} });
+        setTimeout(() => setMiniStatus(null), 1000);
+      }
     }
   };
 
   return (
     <form onSubmit={handleSubmit} style={styles.form}>
-      <MiniStatus config={miniStatus}/>
+      <MiniStatus config={miniStatus} />
       <div style={styles.row}>
         <label style={styles.label}>Provider:</label>
         <select
-          value={provider}
-          onChange={(e) => {
-            setProvider(e.target.value as LLMProvider);
-          }}
+          value={llmConfig.provider}
+          onChange={(e) => setLLMConfig({ ...llmConfig, provider: e.target.value as LLMProvider })}
           style={styles.select}
         >
           {Object.values(LLMProvider).map((p) => (
@@ -115,8 +117,8 @@ const LLMConfig: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       <div style={styles.row}>
         <label style={styles.label}>Model:</label>
         <select
-          value={modelName}
-          onChange={(e) => setModelName(e.target.value)}
+          value={llmConfig.modelName}
+          onChange={(e) => setLLMConfig({ ...llmConfig, modelName: e.target.value })}
           style={styles.select}
         >
           {availableModels.map((model) => (
@@ -131,4 +133,4 @@ const LLMConfig: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   );
 };
 
-export default LLMConfig;
+export default LLMConfigPanel;
