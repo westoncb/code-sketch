@@ -5,7 +5,7 @@ import Button from './Button';
 import ContextBar from './ContextBar';
 import axios from 'axios';
 import { genCodePrompt } from '../prompts';
-import useStore from '../store';
+import useStore from '../stores/store';
 import { ResultPanel } from '../client-types';
 
 const styles = {

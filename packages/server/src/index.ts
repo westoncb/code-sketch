@@ -28,11 +28,6 @@ app.post('/api/select-model', asyncHandler(async (req, res) => {
   }
 }));
 
-app.get('/api/selected-llm', asyncHandler(async (req, res) => {
-  const config = llm.getSelectedLLM();
-  res.json(config);
-}));
-
 app.post('/api/infer', asyncHandler(async (req, res) => {
   const { prompt, systemPrompt} = req.body;
   const result = await llm.infer(prompt, systemPrompt);

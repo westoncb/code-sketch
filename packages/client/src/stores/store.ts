@@ -1,6 +1,6 @@
 import {create} from 'zustand';
 import { AnthropicModels, LLMConfig, LLMProvider } from "@code-sketch/shared-types";
-import { ContextItem, ResultPanel, MiniStatusConfig } from "./client-types";
+import { ContextItem, ResultPanel, MiniStatusConfig } from "../client-types";
 
 // Define the store state type
 interface StoreState {

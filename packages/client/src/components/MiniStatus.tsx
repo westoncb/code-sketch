@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, CSSProperties } from 'react';
 import { MiniStatusConfig } from '../client-types';
 import Button from "./Button";
-import useStore from '../store';
+import useStore from '../stores/store';
 
 const styles: { [key: string]: CSSProperties } = {
   overlay: {

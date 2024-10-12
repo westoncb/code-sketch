@@ -1,5 +1,4 @@
 <code_sketch>
-    [file]: LLM.ts
     [purpose]: to act as an abstraction over a variety of possible LLM 'services,' which might be network APIs like OpenAI or Anthropic or OpenRouter, or might be some method of invoking an LLM locally—perhaps through a shell command invoking Ollama.
     [target_lang]: Typescript
     [custom_config]: {

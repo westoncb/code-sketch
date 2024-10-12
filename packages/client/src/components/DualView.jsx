@@ -3,7 +3,7 @@ import Sketch from './Sketch';
 import Review from './Review';
 import Code from './Code';
 import Waiting from './Waiting';
-import useStore from '../store';
+import useStore from '../stores/store';
 import MiniStatus from './MiniStatus';
 import { ResultPanel } from '../client-types';
 
@@ -23,6 +23,8 @@ const styles = {
     boxShadow: 'var(--box-shadow)',
     borderRadius: '5px',
     overflow: 'hidden',
+    marginBottom: "5px",
+    marginRight: "5px"
   },
   title: {
     padding: 'var(--spacing-medium)',

@@ -6,7 +6,6 @@ export const genCodePrompt = (sketch: string) => {
 
   ## Basic Structure
   <code_sketch>
-      [file]: Filename for the generated code.
       [purpose]: Describes the overall purpose or functionality of the code.
       [target_lang]: Specifies the target/output programming language.
       [custom_config]: A map of arbitrary custom/user-defined properties and values to guide the generation process.
@@ -26,6 +25,6 @@ export const genCodePrompt = (sketch: string) => {
   ${sketch}
   </code_sketch>
 
-  Please generate corresponding production quality code that you believe best satisfies their intentions expressed through the spec. Please wrap your generated code in <code file=user_given_filename> ... </code>. Do NOT use placeholders; the resulting code should be directly executable.
+  Please generate corresponding production quality code that you believe best satisfies their intentions expressed through the spec. Please wrap your generated code in <code target_lang="..."> ... </code>. Do NOT use placeholders; the resulting code should be directly executable.
   `
 }

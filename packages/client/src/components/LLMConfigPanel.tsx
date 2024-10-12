@@ -3,7 +3,7 @@ import { LLMProvider } from '@code-sketch/shared-types';
 import axios from 'axios';
 import Button from './Button';
 import MiniStatus from './MiniStatus';
-import useStore from '../store';
+import useStore from '../stores/store';
 import useConfigStore, {LLMConfig} from '../stores/configStore';
 
 const styles = {
@@ -76,6 +76,7 @@ const LLMConfigPanel: React.FC<LLMConfigProps> = ({ onClose }) => {
         setMiniStatus({ message: `Attempting to load ${llmConfig.provider} model: ${llmConfig.modelName}`, showSpinner: true });
       }
 
+      // need to do this with what was in local storage (if anything) on first run
       await axios.post('/api/select-model', llmConfig);
 
       setLLMConfig(llmConfig);
