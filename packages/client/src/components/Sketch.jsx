@@ -21,7 +21,7 @@ const styles = {
   },
   buttonPanel: {
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'right',
     padding: 'var(--spacing-medium)',
     borderTop: '2px solid var(--border-color)',
   },
@@ -79,8 +79,8 @@ function Sketch() {
     <div style={styles.container}>
       <div ref={editor} style={styles.editor}></div>
       <div style={styles.buttonPanel}>
-        <Button style={{marginRight: "8px"}} onClick={() => {}}>Check</Button>
-        <Button onClick={generate}>Generate</Button>
+        <Button style={{marginRight: "8px", flexGrow: 1}} onClick={() => {}}>Review Sketch</Button>
+        <Button style={{flexGrow: 1}} onClick={generate}>Generate Code</Button>
       </div>
       <ContextBar />
     </div>
@@ -90,7 +90,7 @@ function Sketch() {
 const testSketch = `<code_sketch>
       [purpose]: to act as an abstraction over a variety of possible LLM 'services,' which might be network APIs like OpenAI or Anthropic or OpenRouter, or might be some method of invoking an LLM locally—perhaps through a shell command invoking Ollama.
       [target_lang]: Typescript
-      [custom_config]: {
+      [custom_hints]: {
           comments: terse but fairly complete
           styleInspiration: react core source code
       }

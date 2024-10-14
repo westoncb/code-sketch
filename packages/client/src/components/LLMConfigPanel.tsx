@@ -17,6 +17,7 @@ const styles = {
     display: 'flex',
     gap: 'var(--spacing-medium)',
     alignItems: 'center',
+    justifyContent: "right"
   },
   select: {
     flex: 1,
@@ -130,7 +131,7 @@ const LLMConfigPanel: React.FC<LLMConfigProps> = ({ onClose }) => {
         </select>
       </div>
       <div style={styles.row}>
-        <Button onClick={handleSubmit}>Confirm</Button>
+        <Button style={{marginTop: "5px"}} onClick={handleSubmit}>Confirm</Button>
       </div>
     </form>
   );

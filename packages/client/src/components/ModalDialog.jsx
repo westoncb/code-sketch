@@ -41,7 +41,7 @@ const styles = {
     cursor: 'pointer',
   },
   content: {
-    padding: 'var(--spacing-large)',
+    padding: 'var(--spacing-medium)',
     overflowY: 'auto',
   },
 };
