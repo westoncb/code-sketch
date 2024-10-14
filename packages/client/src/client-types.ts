@@ -1,5 +1,5 @@
 export type ContextItem = {
-  name: string
+  id: string
   content: string
 }
 

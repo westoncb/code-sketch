@@ -1,5 +1,11 @@
-export const genCodePrompt = (sketch: string) => {
+import { ContextItem } from "./client-types"
+
+export const genCodePrompt = (sketch: string, contextItems: ContextItem[]) => {
   return `
+  Here are additional context items you'll need later; please refer back to these as needed:
+
+  ${contextItems.map(ci => "<context_item>" + ci.content + "</context_item>")}
+
   ## Code Sketch system description
 
   A "Code Sketch" is a particular language/format which developers write in in order to guide LLMs to author code. Their sketches will come in varying levels of detail; it is your responsibility to take this sketch/spec and translate it into production-level, complete code. The core of this task is expertly "filling in the blanks": the pseudocode they write provides a basic framework—but it will be incomplete and informal. The ideal way of reading their spec is to take collectively everything that's been stated within it to understand their intentions, and to use your understanding of their intentions to produce the corresponding production code.

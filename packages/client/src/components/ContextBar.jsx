@@ -26,9 +26,9 @@ const ContextBar = () => {
     const text = formData.get('contextText');
 
     if (editingItem) {
-      updateContextItem(context.findIndex(item => item.id === editingItem.id), { text });
+      updateContextItem(context.findIndex(item => item.id === editingItem.id), { content: text });
     } else {
-      const newItem = { id: nextId.current, text };
+      const newItem = { id: nextId.current, content: text };
       addContextItem(newItem);
       nextId.current += 1;
     }
@@ -158,7 +158,7 @@ const ContextBar = () => {
             style={contextItemStyle}
             onClick={() => openModal(item)}
           >
-            <span>{truncateText(item.text)}</span>
+            <span>{truncateText(item.content)}</span>
             <button
               style={removeButtonStyle}
               onClick={(e) => {

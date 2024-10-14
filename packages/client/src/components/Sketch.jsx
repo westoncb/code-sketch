@@ -29,7 +29,13 @@ const styles = {
 
 function Sketch() {
   const editor = useRef(null);
-  const { setMiniStatus, setCode, setActiveResultPanel } = useStore();
+  const { setMiniStatus, setCode, setActiveResultPanel, context } = useStore((state) => ({
+    setMiniStatus: state.setMiniStatus,
+    setCode: state.setCode,
+    setActiveResultPanel: state.setActiveResultPanel,
+    context: state.context,
+  }));
+
 
   useEffect(() => {
     if (!editor.current) return;
@@ -51,7 +57,7 @@ function Sketch() {
   }, []);
 
   const systemPrompt = "you are a helpful chatbot";
-  const prompt = genCodePrompt(testSketch);
+  const prompt = genCodePrompt(testSketch, context);
 
   const generate = async () => {
     try {
@@ -60,7 +66,6 @@ function Sketch() {
         prompt,
         systemPrompt
       });
-      console.log("FULL RESPONSE", response);
       setActiveResultPanel(ResultPanel.code)
       setCode(response.data.result);
       setMiniStatus(null);
