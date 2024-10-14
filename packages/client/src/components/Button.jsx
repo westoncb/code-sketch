@@ -2,7 +2,6 @@ import React from 'react';
 
 const styles = {
   button: {
-    marginRight: '8px',
     padding: '2px 12px',
     backgroundColor: 'var(--bg-color)',
     color: 'var(--button-text)',

@@ -34,6 +34,22 @@ app.post('/api/infer', asyncHandler(async (req, res) => {
   res.json(result);
 }));
 
+app.use((error, req, res, next) => {
+  console.error('Error caught in middleware:', error);
+
+  if (res.headersSent) {
+    console.log('Headers already sent, passing to default error handler');
+    return next(error);
+  }
+
+  const responseBody = {
+    error: error.message || 'An unexpected error occurred'
+  };
+  console.log('Sending error response:', responseBody);
+
+  res.status(500).json(responseBody);
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {

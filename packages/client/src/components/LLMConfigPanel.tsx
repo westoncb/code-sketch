@@ -43,8 +43,14 @@ interface LLMConfigProps {
 const LLMConfigPanel: React.FC<LLMConfigProps> = ({ onClose }) => {
   const [availableModels, setAvailableModels] = useState<string[]>([]);
 
-  const setLLMConfig = useConfigStore((state) => state.setLLMConfig);
-  const llmConfig = useConfigStore((state) => state.llmConfig);
+  // This is a local copy of the config for use within the dialog prior to confirmation of change
+  const { setLLMConfig, llmConfig } = useConfigStore((state) => ({
+    setLLMConfig: state.setLLMConfig,
+    llmConfig: state.llmConfig
+  }));
+
+  const [tempLLMConfig, setTempLLMConfig] = useState<LLMConfig>({...llmConfig});
+
   const { miniStatus, setMiniStatus } = useStore(state => ({
     miniStatus: state.miniStatus,
     setMiniStatus: state.setMiniStatus
@@ -52,16 +58,13 @@ const LLMConfigPanel: React.FC<LLMConfigProps> = ({ onClose }) => {
 
   useEffect(() => {
     fetchAvailableModels();
-  }, [llmConfig.provider]);
+  }, [tempLLMConfig.provider]);
 
   const fetchAvailableModels = async () => {
     try {
-      const response = await axios.get(`/api/available-models?provider=${llmConfig.provider}`);
+      const response = await axios.get(`/api/available-models?provider=${tempLLMConfig.provider}`);
       const models = response.data.models;
       setAvailableModels(models);
-      if (!models.includes(llmConfig.modelName)) {
-        setLLMConfig({ ...llmConfig, modelName: models[0] || '' });
-      }
     } catch (error) {
       console.error('Error fetching available models:', error);
       setAvailableModels([]);
@@ -72,16 +75,15 @@ const LLMConfigPanel: React.FC<LLMConfigProps> = ({ onClose }) => {
     e.preventDefault();
 
     try {
-      if (llmConfig.provider === LLMProvider.Ollama) {
-        setMiniStatus({ message: `Attempting to load ${llmConfig.provider} model: ${llmConfig.modelName}`, showSpinner: true });
+      if (tempLLMConfig.provider === LLMProvider.Ollama) {
+        setMiniStatus({ message: `Attempting to load ${tempLLMConfig.provider} model: ${tempLLMConfig.modelName}`, showSpinner: true });
       }
 
-      // need to do this with what was in local storage (if anything) on first run
-      await axios.post('/api/select-model', llmConfig);
+      await axios.post('/api/select-model', tempLLMConfig);
 
-      setLLMConfig(llmConfig);
+      setLLMConfig(tempLLMConfig);
 
-      if (llmConfig.provider === LLMProvider.Ollama) {
+      if (tempLLMConfig.provider === LLMProvider.Ollama) {
         setMiniStatus({ message: 'Model loaded successfully' });
 
         setTimeout(() => {
@@ -93,7 +95,7 @@ const LLMConfigPanel: React.FC<LLMConfigProps> = ({ onClose }) => {
       }
     } catch (error) {
       console.error('Error selecting model:', error);
-      if (llmConfig.provider === LLMProvider.Ollama) {
+      if (tempLLMConfig.provider === LLMProvider.Ollama) {
         setMiniStatus({ message: 'Error selecting model', onConfirm: () => {} });
         setTimeout(() => setMiniStatus(null), 1000);
       }
@@ -106,8 +108,8 @@ const LLMConfigPanel: React.FC<LLMConfigProps> = ({ onClose }) => {
       <div style={styles.row}>
         <label style={styles.label}>Provider:</label>
         <select
-          value={llmConfig.provider}
-          onChange={(e) => setLLMConfig({ ...llmConfig, provider: e.target.value as LLMProvider })}
+          value={tempLLMConfig.provider}
+          onChange={(e) => setTempLLMConfig({ ...tempLLMConfig, provider: e.target.value as LLMProvider })}
           style={styles.select}
         >
           {Object.values(LLMProvider).map((p) => (
@@ -118,8 +120,8 @@ const LLMConfigPanel: React.FC<LLMConfigProps> = ({ onClose }) => {
       <div style={styles.row}>
         <label style={styles.label}>Model:</label>
         <select
-          value={llmConfig.modelName}
-          onChange={(e) => setLLMConfig({ ...llmConfig, modelName: e.target.value })}
+          value={tempLLMConfig.modelName}
+          onChange={(e) => setTempLLMConfig({ ...tempLLMConfig, modelName: e.target.value })}
           style={styles.select}
         >
           {availableModels.map((model) => (

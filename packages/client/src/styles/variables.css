@@ -32,4 +32,6 @@
   --tab-inactive-bg: #7d8761; /* Slightly darker than panel-bg */
   --tab-active-bg: var(--panel-bg);
   --tab-border-radius: 5px 5px 0 0;
+
+  --note-bg: #e0e0a0; /* yellowish like sticky pad note */
 }

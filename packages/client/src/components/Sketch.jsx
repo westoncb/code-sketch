@@ -60,12 +60,13 @@ function Sketch() {
         prompt,
         systemPrompt
       });
+      console.log("FULL RESPONSE", response);
       setActiveResultPanel(ResultPanel.code)
       setCode(response.data.result);
       setMiniStatus(null);
     } catch (error) {
-      setMiniStatus({message: 'Error generating code', onConfirm: () =>{}});
-      console.error('Error generating code:', error);
+      setMiniStatus({message: 'Error generating code: ' + error.response.data.error, displayRegion: "right", onConfirm: () =>{}});
+      console.error('Error generating code:', error.response.data.error);
     }
   }
 
@@ -73,7 +74,7 @@ function Sketch() {
     <div style={styles.container}>
       <div ref={editor} style={styles.editor}></div>
       <div style={styles.buttonPanel}>
-        <Button onClick={() => {}}>Check</Button>
+        <Button style={{marginRight: "8px"}} onClick={() => {}}>Check</Button>
         <Button onClick={generate}>Generate</Button>
       </div>
       <ContextBar />
@@ -81,9 +82,7 @@ function Sketch() {
   );
 }
 
-const testSketch = `
-  <code_sketch>
-      [file]: LLM.ts
+const testSketch = `<code_sketch>
       [purpose]: to act as an abstraction over a variety of possible LLM 'services,' which might be network APIs like OpenAI or Anthropic or OpenRouter, or might be some method of invoking an LLM locally—perhaps through a shell command invoking Ollama.
       [target_lang]: Typescript
       [custom_config]: {
