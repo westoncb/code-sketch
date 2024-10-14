@@ -14,7 +14,7 @@ export const genCodePrompt = (sketch: string, contextItems: ContextItem[]) => {
   <code_sketch>
       [purpose]: Describes the overall purpose or functionality of the code.
       [target_lang]: Specifies the target/output programming language.
-      [custom_config]: A map of arbitrary custom/user-defined properties and values to guide the generation process.
+      [custom_hints]: A map of arbitrary custom/user-defined properties and values to guide the generation process.
 
       <sketch>
           The core sketch content goes here.
