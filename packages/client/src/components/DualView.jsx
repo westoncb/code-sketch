@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Sketch from './Sketch';
-import Review from './Review';
+import SketchReview from './Review';
 import Code from './Code';
 import Waiting from './Waiting';
 import useStore from '../stores/store';
@@ -46,7 +46,7 @@ function DualView() {
   const getRightContent = () => {
     switch (activeResultPanel) {
       case ResultPanel.review:
-        return <Review />;
+        return <SketchReview />;
       case ResultPanel.code:
         return <Code/>;
       default:

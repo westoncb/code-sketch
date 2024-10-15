@@ -4,7 +4,7 @@ import { oneDark } from '@codemirror/theme-one-dark';
 import Button from './Button';
 import ContextBar from './ContextBar';
 import axios from 'axios';
-import { genCodePrompt } from '../prompts';
+import { genCodePrompt, genReviewPrompt } from '../prompts';
 import useStore from '../stores/store';
 import { ResultPanel } from '../client-types';
 
@@ -29,11 +29,16 @@ const styles = {
 
 function Sketch() {
   const editor = useRef(null);
-  const { setMiniStatus, setCode, setActiveResultPanel, context } = useStore((state) => ({
+  const editorView = useRef(null);
+
+  const { setMiniStatus, setCode, setReview, setActiveResultPanel, context, sketch, setSketch } = useStore((state) => ({
     setMiniStatus: state.setMiniStatus,
     setCode: state.setCode,
+    setReview: state.setReview,
     setActiveResultPanel: state.setActiveResultPanel,
     context: state.context,
+    sketch: state.sketch,
+    setSketch: state.setSketch
   }));
 
 
@@ -41,7 +46,7 @@ function Sketch() {
     if (!editor.current) return;
 
     const view = new EditorView({
-      doc: testSketch,
+      doc: sketch,
       extensions: [
         basicSetup,
         oneDark,
@@ -53,20 +58,29 @@ function Sketch() {
       parent: editor.current
     });
 
+    editorView.current = view;
+
     return () => view.destroy();
-  }, []);
+  }, [sketch]);
 
-  const systemPrompt = "you are a helpful chatbot";
-  const prompt = genCodePrompt(testSketch, context);
+  const getEditorContent = () => {
+    if (editorView.current) {
+      return editorView.current.state.doc.toString();  // Get the document contents as a string
+    }
+    return '';
+  };
 
-  const generate = async () => {
+  const systemPrompt = "";
+
+  const generateCode = async () => {
     try {
       setMiniStatus({ message: "Generating code from sketch..", displayRegion: "right", showSpinner: true });
       const response = await axios.post('/api/infer', {
-        prompt,
+        prompt: genCodePrompt(getEditorContent(), context),
         systemPrompt
       });
-      setActiveResultPanel(ResultPanel.code)
+      setSketch(getEditorContent());
+      setActiveResultPanel(ResultPanel.code);
       setCode(response.data.result);
       setMiniStatus(null);
     } catch (error) {
@@ -75,52 +89,33 @@ function Sketch() {
     }
   }
 
+  const generateReview = async () => {
+    try {
+      setMiniStatus({ message: "Generating review from sketch..", displayRegion: "right", showSpinner: true });
+      const response = await axios.post('/api/infer', {
+        prompt: genReviewPrompt(getEditorContent(), context),
+        systemPrompt
+      });
+      setSketch(getEditorContent());
+      setActiveResultPanel(ResultPanel.review);
+      setReview(response.data.result);
+      setMiniStatus(null);
+    } catch (error) {
+      setMiniStatus({message: 'Error generating review: ' + error.response?.data.error, displayRegion: "right", onConfirm: () =>{}});
+      console.error('Error generating review:', error);
+    }
+  }
+
   return (
     <div style={styles.container}>
       <div ref={editor} style={styles.editor}></div>
       <div style={styles.buttonPanel}>
-        <Button style={{marginRight: "8px", flexGrow: 1}} onClick={() => {}}>Review Sketch</Button>
-        <Button style={{flexGrow: 1}} onClick={generate}>Generate Code</Button>
+        <Button style={{marginRight: "8px", flexGrow: 1}} onClick={generateReview}>Review Sketch</Button>
+        <Button style={{flexGrow: 1}} onClick={generateCode}>Generate Code</Button>
       </div>
       <ContextBar />
     </div>
   );
 }
-
-const testSketch = `<code_sketch>
-      [purpose]: to act as an abstraction over a variety of possible LLM 'services,' which might be network APIs like OpenAI or Anthropic or OpenRouter, or might be some method of invoking an LLM locally—perhaps through a shell command invoking Ollama.
-      [target_lang]: Typescript
-      [custom_hints]: {
-          comments: terse but fairly complete
-          styleInspiration: react core source code
-      }
-
-
-      <sketch>
-          // general note: should be stateful on whether user has selected, OpenAI, Anthropic, or Ollama, in addition to the selected model. If the user wants to use Ollama we should start it up by using "ollama run \${ model_name }" so it's ready to go by inference time. Should use node's "child - process" system for Ollama interaction.
-
-          class LLM {
-              // insert: enum for LLM providers; choose appropriate name. Should include entries for OpenAI, and Anthropic
-              // insert: BaseConfig, OpenAIConfig, AnthropicConfig, and OllamaConfig types
-              // insert: an "InferenceResult" type, has an id, result, and indicates error vs success
-
-              constructor() {
-                  // should build up an API keys map by reading from a .env file where we have an entry for OpenAI and one for Anthropic; ollama doesn't require a key
-              }
-
-              infer(prompt, systemPrompt, config: LLMConfig /*not sure how to handle this type-wise since the type depends on the selected provider.. maybe we should have something like LLMConfig<Provider> ?*/) {
-                  // the config param should have sensible defaults when user doesn't explicitly define something
-              }
-
-              selectLLM(provider, modelName)
-              getActiveInferences() // should return an array of Promise<InferenceResult> for each still-running inference
-              getErrorInferences()
-              removeErrorInference(id)
-              cancelInference(id)
-              restartInference(id)
-          }
-      </sketch>
-  </code_sketch>
-`;
 
 export default Sketch;

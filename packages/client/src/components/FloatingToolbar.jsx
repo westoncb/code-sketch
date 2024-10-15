@@ -7,25 +7,31 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: 'var(--spacing-medium)',
-    padding: 'var(--spacing-small)',
+    padding: 'var(--spacing-medium)',
     backgroundColor: 'var(--panel-bg)',
     border: '2px solid var(--border-color)',
     borderRadius: '5px',
     boxShadow: 'var(--box-shadow)',
     pointerEvents: 'auto',
+    marginBottom: '5px'
   },
   llmStatus: {
-    fontSize: 'var(--font-size-small)',
+    fontSize: 'var(--font-size-medium)',
+    backgroundColor: "#f2848480",
+    border: 'solid 1px black',
+    borderRadius: '3px',
+    padding: "5px",
     color: 'var(--text-color)',
+    fontWeight: 'bold',
     opacity: 0.7,
     transition: 'opacity var(--transition-speed)',
   },
   llmStatusActive: {
     opacity: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.15)",
+    backgroundColor: "#c1edff80",
     borderRadius: "3px",
     padding: "5px",
-    fontWeight: "bold"
+    border: "none"
   },
   helpButton: {
     marginLeft: '2rem',
@@ -50,7 +56,7 @@ function FloatingToolbar({ onConfigClick, onHelpClick }) {
       >
         {"<"}{llmStatusText}{">"}
       </span>
-      <Button onClick={onHelpClick} style={styles.helpButton}>Help</Button>
+      {/* <Button onClick={onHelpClick} style={styles.helpButton}>Help</Button> */}
     </div>
   );
 }

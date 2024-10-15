@@ -34,4 +34,6 @@
   --tab-border-radius: 5px 5px 0 0;
 
   --note-bg: #e0e0a0; /* yellowish like sticky pad note */
+  --llm-message-bg: #ae90d2;
+  --user-response-bg: #86ebac; /* or any color you prefer */
 }

@@ -18,7 +18,7 @@ const styles = {
     overflow: 'hidden',
   },
   content: {
-    width: '95%',
+    width: '98%',
     height: '95%',
     display: 'flex',
     flexDirection: 'column',

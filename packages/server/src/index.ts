@@ -24,7 +24,7 @@ app.post('/api/select-model', asyncHandler(async (req, res) => {
   if (success) {
     res.json({ message: 'Model selected successfully' });
   } else {
-    res.status(500).json({ error: 'Failed to select model' });
+    res.status(500).json({ error: 'Failed to select model:', provider, modelName});
   }
 }));
 

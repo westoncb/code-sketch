@@ -33,7 +33,7 @@ const styles = {
     overflowY: "scroll"
   },
   modelName: {
-    backgroundColor: "#a37bd3",
+    backgroundColor: "var(--llm-message-bg)",
     padding: "5px",
     borderBottom: '2px solid var(--border-color)',
     borderTop: '2px solid var(--border-color)',
