@@ -72,13 +72,11 @@ function Sketch() {
     return '';
   };
 
-  const systemPrompt = "";
+  const systemPrompt = "You are currently operating within the 'code-sketch' app. Your goal is to follow guidelines given in prompts, and to assist developers taking their 'sketches' to well thought out production quality code.";
 
   const generateCode = async () => {
     try {
       setMiniStatus({ message: "Generating code from sketch..", displayRegion: "right", showSpinner: true });
-
-      console.log("USING CONFIG", llmConfig)
 
       const response = await axios.post('/api/infer', {
         prompt: genCodePrompt(getEditorContent(), context),

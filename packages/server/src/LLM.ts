@@ -103,8 +103,36 @@ class LLM {
   }
 
   private async inferOpenAI(prompt: string, systemPrompt: string, config: OpenAIConfig): Promise<InferenceResult> {
-    // Implementation to be added later
-    throw new Error('OpenAI inference not implemented');
+    if (!this.openaiClient) {
+      throw new Error('OpenAI client not initialized');
+    }
+
+    try {
+      const chatCompletion = await this.openaiClient.chat.completions.create({
+        model: config.model,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: prompt }
+        ],
+        max_tokens: config.max_tokens,
+        temperature: config.temperature,
+      });
+
+      const response = chatCompletion.choices[0]?.message?.content;
+
+      if (!response) {
+        throw new Error('No response from OpenAI');
+      }
+
+      return {
+        id: chatCompletion.id,
+        result: response,
+      };
+    } catch (error) {
+      console.error('Error during OpenAI inference:', error);
+      console.error("config:", config, "system: ", systemPrompt, "prompt", prompt);
+      throw error;
+    }
   }
 
   private async inferAnthropic(prompt: string, systemPrompt: string, config: AnthropicConfig): Promise<InferenceResult> {
