@@ -98,7 +98,6 @@ const useStore = create<StoreState>((set) => ({
     )
   })),
   setActiveResultPanel: (panel) => {
-    console.log("setting that active result panel", panel);
     set({ activeResultPanel: panel })
   },
   setMiniStatus: (config) => {

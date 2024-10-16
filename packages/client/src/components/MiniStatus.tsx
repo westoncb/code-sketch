@@ -10,14 +10,14 @@ const styles: { [key: string]: CSSProperties } = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(196, 207, 161, 0.35)', // Semi-transparent bg-color
+    backgroundColor: 'rgba(196, 207, 161, 0.35)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 50,
   },
   popup: {
-    backgroundColor: 'rgba(139, 149, 109, 0.9)', // Semi-transparent panel-bg
+    backgroundColor: 'rgba(139, 149, 109, 0.9)',
     border: '2px solid var(--border-color)',
     boxShadow: 'var(--box-shadow)',
     borderRadius: '5px',
@@ -28,8 +28,8 @@ const styles: { [key: string]: CSSProperties } = {
     gap: 'var(--spacing-medium)',
   },
   canvas: {
-    width: 64,
-    height: 64,
+    width: 160,
+    height: 144,
     border: '1px solid var(--border-color)',
   },
   message: {
@@ -44,20 +44,97 @@ const styles: { [key: string]: CSSProperties } = {
   },
 };
 
-const MiniStatus: React.FC<{ config: MiniStatusConfig }> = ({config}) => {
+// Game Boy Color inspired palette
+const palette = [
+  '#332c50', '#46878f', '#94e344', '#e2f3e4',
+  '#5e315b', '#8c3f5d', '#ba6156', '#f2a65e',
+  '#2b2b26', '#6a6b04', '#a2db3c', '#c6f68d',
+  '#563c5c', '#9b6a6c', '#e69b7b', '#f6e989',
+];
+
+const GRID_WIDTH = 40;
+const GRID_HEIGHT = 36;
+const CELL_SIZE = 4;
+
+const createInitialGrid = () => {
+  const grid = [];
+  for (let y = 0; y < GRID_HEIGHT; y++) {
+    const row = [];
+    for (let x = 0; x < GRID_WIDTH; x++) {
+      row.push(Math.floor(Math.random() * palette.length));
+    }
+    grid.push(row);
+  }
+  return grid;
+};
+
+const updateGrid = (grid: number[][]) => {
+  const newGrid = grid.map(row => [...row]);
+
+  for (let y = 0; y < GRID_HEIGHT; y++) {
+    for (let x = 0; x < GRID_WIDTH; x++) {
+      const neighbors = [
+        grid[(y - 1 + GRID_HEIGHT) % GRID_HEIGHT][(x - 1 + GRID_WIDTH) % GRID_WIDTH],
+        grid[(y - 1 + GRID_HEIGHT) % GRID_HEIGHT][x],
+        grid[(y - 1 + GRID_HEIGHT) % GRID_HEIGHT][(x + 1) % GRID_WIDTH],
+        grid[y][(x - 1 + GRID_WIDTH) % GRID_WIDTH],
+        grid[y][(x + 1) % GRID_WIDTH],
+        grid[(y + 1) % GRID_HEIGHT][(x - 1 + GRID_WIDTH) % GRID_WIDTH],
+        grid[(y + 1) % GRID_HEIGHT][x],
+        grid[(y + 1) % GRID_HEIGHT][(x + 1) % GRID_WIDTH],
+      ];
+
+      const currentState = grid[y][x];
+      const neighborCounts = neighbors.reduce((acc, state) => {
+        acc[state] = (acc[state] || 0) + 1;
+        return acc;
+      }, {});
+
+      let maxCount = 0;
+      let dominantState = currentState;
+
+      for (const [state, count] of Object.entries(neighborCounts)) {
+        if (typeof count === 'number' && count > maxCount) {
+          maxCount = count;
+          dominantState = Number(state);
+        }
+      }
+
+      if (maxCount > 3) {
+        newGrid[y][x] = dominantState;
+      } else if (maxCount < 2) {
+        newGrid[y][x] = (currentState + 1) % palette.length;
+      }
+    }
+  }
+
+  return newGrid;
+};
+
+const MiniStatus: React.FC<{ config: MiniStatusConfig }> = ({ config }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [frame, setFrame] = useState(0);
+  const [grid, setGrid] = useState(() => createInitialGrid());
   const setMiniStatus = useStore(state => state.setMiniStatus);
 
   useEffect(() => {
     if (!config || !config.showSpinner) return;
 
     const intervalId = setInterval(() => {
-      setFrame(prevFrame => (prevFrame + 1) % 16);
-    }, 100);
+      setGrid(prevGrid => updateGrid(prevGrid));
+    }, 150);
 
     return () => clearInterval(intervalId);
   }, [config]);
+
+  useEffect(() => {
+    if (!config || !config.showSpinner) return;
+
+    const intervalId = setInterval(() => {
+      setGrid(() => createInitialGrid());
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   useEffect(() => {
     if (!config || !config.showSpinner) return;
@@ -68,35 +145,13 @@ const MiniStatus: React.FC<{ config: MiniStatusConfig }> = ({config}) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const lightColor = '#c4cfa1';
-    const darkColor = '#8b956d';
-    const stripeWidth = 8;
-    const stripeSpacing = stripeWidth * 2;
-
-    ctx.clearRect(0, 0, 64, 64);
-
-    for (let i = -64; i < 64 * 2; i += stripeSpacing) {
-      ctx.beginPath();
-      ctx.moveTo(i + frame * 2, 0);
-      ctx.lineTo(i + 64 + frame * 2, 64);
-      ctx.lineWidth = stripeWidth;
-      ctx.strokeStyle = lightColor;
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(i + stripeWidth + frame * 2, 0);
-      ctx.lineTo(i + 64 + stripeWidth + frame * 2, 64);
-      ctx.lineWidth = stripeWidth;
-      ctx.strokeStyle = darkColor;
-      ctx.stroke();
+    for (let y = 0; y < GRID_HEIGHT; y++) {
+      for (let x = 0; x < GRID_WIDTH; x++) {
+        ctx.fillStyle = palette[grid[y][x]];
+        ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+      }
     }
-
-    ctx.strokeStyle = 'var(--border-color)';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(0, 0, 64, 64);
-  }, [frame, config]);
-
-  // console.log("rendering!!", config)
+  }, [grid, config]);
 
   if (!config) return null;
 
@@ -104,14 +159,14 @@ const MiniStatus: React.FC<{ config: MiniStatusConfig }> = ({config}) => {
 
   const confirmAndClose = () => {
     setMiniStatus(null);
-    onConfirm()
-  }
+    onConfirm();
+  };
 
   return (
     <div style={styles.overlay}>
       <div style={styles.popup}>
         {showSpinner && (
-          <canvas ref={canvasRef} width={64} height={64} style={styles.canvas} />
+          <canvas ref={canvasRef} width={160} height={144} style={styles.canvas} />
         )}
         {message && (
           <div style={styles.message}>
