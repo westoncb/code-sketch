@@ -45,7 +45,7 @@ const llmQuestionStyles = {
     display: 'flex',
     flexDirection: 'column' as const,
   },
-  modelName: {
+  model: {
     fontWeight: 'bold',
     marginBottom: 'var(--spacing-small)',
   },
@@ -75,7 +75,7 @@ interface ParsedContent {
 }
 
 function SketchReview() {
-  const { modelName } = useConfigStore((state) => state.llmConfig);
+  const llmConfig = useConfigStore((state) => state.llmConfig);
   const { review, sketch, setSketch, setMiniStatus} = useStore((state) => ({
     review: state.review,
     sketch: state.sketch,
@@ -162,7 +162,8 @@ function SketchReview() {
       setMiniStatus({ message: "Refining sketch..", displayRegion: "left", showSpinner: true });
       const response = await axios.post('/api/infer', {
         prompt: getRefineSketchPrompt(reconstructedReview),
-        systemPrompt: ""
+        systemPrompt: "",
+        config: llmConfig
       });
       setSketch(response.data.result);
       setMiniStatus(null);
@@ -179,7 +180,7 @@ function SketchReview() {
     return lines.map((line, index) => (
       <React.Fragment key={index}>
         {line}
-        {index < lines.length - 1 && <br />}
+        {index < lines.length - 1}
       </React.Fragment>
     ));
   };
@@ -192,7 +193,7 @@ function SketchReview() {
             return (
               <LLMQuestion
                 key={index}
-                modelName={modelName}
+                model={llmConfig.model}
                 question={questions[item.questionIndex]}
                 onResponse={(response) => handleQuestionResponse(item.questionIndex!, response)}
               />
@@ -212,12 +213,12 @@ function SketchReview() {
 }
 
 interface LLMQuestionProps {
-  modelName: string;
+  model: string;
   question: QuestionObject;
   onResponse: (response: string) => void;
 }
 
-const LLMQuestion: React.FC<LLMQuestionProps> = ({ modelName, question, onResponse }) => {
+const LLMQuestion: React.FC<LLMQuestionProps> = ({ model, question, onResponse }) => {
   const [inputValue, setInputValue] = useState(question.userResponse || '');
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -228,7 +229,7 @@ const LLMQuestion: React.FC<LLMQuestionProps> = ({ modelName, question, onRespon
 
   return (
     <div style={llmQuestionStyles.container}>
-      <div style={llmQuestionStyles.modelName}>{modelName}</div>
+      <div style={llmQuestionStyles.model}>{model}</div>
       <div style={llmQuestionStyles.question}>{question.question}</div>
       <textarea
         value={inputValue}

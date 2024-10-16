@@ -32,7 +32,7 @@ const styles = {
     maxHeight: "15%",
     overflowY: "scroll"
   },
-  modelName: {
+  model: {
     backgroundColor: "var(--llm-message-bg)",
     padding: "5px",
     borderBottom: '2px solid var(--border-color)',
@@ -74,7 +74,7 @@ function Code() {
   return (
     <div style={styles.container}>
       <div ref={editor} style={styles.editor}></div>
-      {comments && <div style={styles.modelName}>{llmConfig.modelName + ":"}</div>}
+      {comments && <div style={styles.model}>{llmConfig.model + ":"}</div>}
       {comments && <div style={styles.comments}>{comments}</div>}
     </div>
   );

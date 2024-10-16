@@ -4,7 +4,6 @@ import FloatingToolbar from './FloatingToolbar';
 import ModalDialog from './ModalDialog';
 import '../styles/global.css';
 import LLMConfigPanel from './LLMConfigPanel';
-import useConfigStore from '../stores/configStore';
 
 const styles = {
   appContainer: {
@@ -38,11 +37,6 @@ const styles = {
 function App() {
   const [isConfigVisible, setIsConfigVisible] = useState(false);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const { syncConfigToServer } = useConfigStore();
-
-  useEffect(() => {
-    syncConfigToServer();
-  }, []);
 
   return (
     <div style={styles.appContainer}>

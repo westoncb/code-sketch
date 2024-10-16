@@ -41,9 +41,9 @@ const styles = {
 function FloatingToolbar({ onConfigClick, onHelpClick }) {
   const llmConfig = useConfigStore((state) => state.llmConfig);
 
-  const { provider, modelName } = llmConfig || {};
-  const isLLMSelected = provider && modelName;
-  const llmStatusText = isLLMSelected ? `${provider} - ${modelName}` : '<no llm selected>';
+  const { provider, model } = llmConfig || {};
+  const isLLMSelected = provider && model;
+  const llmStatusText = isLLMSelected ? `${provider} - ${model}` : '<no llm selected>';
 
   return (
     <div style={styles.toolbar}>

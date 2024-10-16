@@ -1,5 +1,4 @@
 import {create} from 'zustand';
-import { AnthropicModels, LLMConfig, LLMProvider } from "@code-sketch/shared-types";
 import { ContextItem, ResultPanel, MiniStatusConfig } from "../client-types";
 
 const codeSketchTemplate = `[overview]:
@@ -42,7 +41,7 @@ const testSketch = `[purpose]: to act as an abstraction over a variety of possib
             // the config param should have sensible defaults when user doesn't explicitly define something
         }
 
-        selectLLM(provider, modelName)
+        selectLLM(provider, model)
                       getActiveInferences() // should return an array of Promise<InferenceResult> for each still-running inference
                       getErrorInferences()
                       removeErrorInference(id)
@@ -56,7 +55,6 @@ interface StoreState {
   sketch: string
   review: string
   code: string
-  llmConfig: LLMConfig
   context: ContextItem[]
   activeResultPanel: ResultPanel
   miniStatus: MiniStatusConfig
@@ -65,7 +63,6 @@ interface StoreState {
   setSketch: (sketch: string) => void
   setReview: (review: string) => void
   setCode: (code: string) => void
-  setLLMConfig: (config: Partial<LLMConfig>) => void
   addContextItem: (item: ContextItem) => void
   removeContextItem: (index: number) => void
   updateContextItem: (index: number, item: Partial<ContextItem>) => void
@@ -77,7 +74,6 @@ const useStore = create<StoreState>((set) => ({
   sketch: testSketch,
   review: '',
   code: '',
-  llmConfig: null,
   context: [],
   activeResultPanel: ResultPanel.waiting,
   miniStatus: null,
@@ -86,9 +82,6 @@ const useStore = create<StoreState>((set) => ({
   setSketch: (sketch) => set({ sketch }),
   setReview: (review) => set({ review }),
   setCode: (code) => set({ code }),
-  setLLMConfig: (config) => set((state) => ({
-    llmConfig: { ...state.llmConfig, ...config }
-  })),
   addContextItem: (item) => set((state) => ({
     context: [...state.context, item]
   })),

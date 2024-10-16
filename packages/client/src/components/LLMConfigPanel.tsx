@@ -4,7 +4,8 @@ import axios from 'axios';
 import Button from './Button';
 import MiniStatus from './MiniStatus';
 import useStore from '../stores/store';
-import useConfigStore, {LLMConfig} from '../stores/configStore';
+import useConfigStore from '../stores/configStore';
+import { LLMConfig } from '@code-sketch/shared-types';
 
 const styles = {
   form: {
@@ -44,12 +45,12 @@ interface LLMConfigProps {
 const LLMConfigPanel: React.FC<LLMConfigProps> = ({ onClose }) => {
   const [availableModels, setAvailableModels] = useState<string[]>([]);
 
-  // This is a local copy of the config for use within the dialog prior to confirmation of change
   const { setLLMConfig, llmConfig } = useConfigStore((state) => ({
     setLLMConfig: state.setLLMConfig,
     llmConfig: state.llmConfig
   }));
 
+  // This is a local copy of the config for use within the dialog prior to confirmation of change
   const [tempLLMConfig, setTempLLMConfig] = useState<LLMConfig>({...llmConfig});
 
   const { miniStatus, setMiniStatus } = useStore(state => ({
@@ -66,6 +67,7 @@ const LLMConfigPanel: React.FC<LLMConfigProps> = ({ onClose }) => {
       const response = await axios.get(`/api/available-models?provider=${tempLLMConfig.provider}`);
       const models = response.data.models;
       setAvailableModels(models);
+      setTempLLMConfig({ ...tempLLMConfig, model: models[0] });
     } catch (error) {
       console.error('Error fetching available models:', error);
       setAvailableModels([]);
@@ -77,10 +79,9 @@ const LLMConfigPanel: React.FC<LLMConfigProps> = ({ onClose }) => {
 
     try {
       if (tempLLMConfig.provider === LLMProvider.Ollama) {
-        setMiniStatus({ message: `Attempting to load ${tempLLMConfig.provider} model: ${tempLLMConfig.modelName}`, showSpinner: true });
+        setMiniStatus({ message: `Attempting to load ${tempLLMConfig.provider} model: ${tempLLMConfig.model}`, showSpinner: true });
+        await axios.post('/api/load-ollama-model', {model: tempLLMConfig.model});
       }
-
-      await axios.post('/api/select-model', tempLLMConfig);
 
       setLLMConfig(tempLLMConfig);
 
@@ -121,8 +122,8 @@ const LLMConfigPanel: React.FC<LLMConfigProps> = ({ onClose }) => {
       <div style={styles.row}>
         <label style={styles.label}>Model:</label>
         <select
-          value={tempLLMConfig.modelName}
-          onChange={(e) => setTempLLMConfig({ ...tempLLMConfig, modelName: e.target.value })}
+          value={tempLLMConfig.model}
+          onChange={(e) => setTempLLMConfig({ ...tempLLMConfig, model: e.target.value })}
           style={styles.select}
         >
           {availableModels.map((model) => (

@@ -7,6 +7,7 @@ import axios from 'axios';
 import { genCodePrompt, genReviewPrompt } from '../prompts';
 import useStore from '../stores/store';
 import { ResultPanel } from '../client-types';
+import useConfigStore from '../stores/configStore';
 
 const styles = {
   container: {
@@ -30,6 +31,7 @@ const styles = {
 function Sketch() {
   const editor = useRef(null);
   const editorView = useRef(null);
+  const llmConfig = useConfigStore(state => state.llmConfig);
 
   const { setMiniStatus, setCode, setReview, setActiveResultPanel, context, sketch, setSketch } = useStore((state) => ({
     setMiniStatus: state.setMiniStatus,
@@ -75,9 +77,13 @@ function Sketch() {
   const generateCode = async () => {
     try {
       setMiniStatus({ message: "Generating code from sketch..", displayRegion: "right", showSpinner: true });
+
+      console.log("USING CONFIG", llmConfig)
+
       const response = await axios.post('/api/infer', {
         prompt: genCodePrompt(getEditorContent(), context),
-        systemPrompt
+        systemPrompt,
+        config: llmConfig
       });
       setSketch(getEditorContent());
       setActiveResultPanel(ResultPanel.code);
@@ -92,9 +98,11 @@ function Sketch() {
   const generateReview = async () => {
     try {
       setMiniStatus({ message: "Generating review from sketch..", displayRegion: "right", showSpinner: true });
+
       const response = await axios.post('/api/infer', {
         prompt: genReviewPrompt(getEditorContent(), context),
-        systemPrompt
+        systemPrompt,
+        config: llmConfig
       });
       setSketch(getEditorContent());
       setActiveResultPanel(ResultPanel.review);

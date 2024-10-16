@@ -1,6 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import { LLMProvider } from '@code-sketch/shared-types';
+import { LLMProvider, LLMConfig } from '@code-sketch/shared-types';
 import LLM from './LLM.js';
 
 const app = express();
@@ -18,25 +18,40 @@ app.get('/api/available-models', asyncHandler(async (req, res) => {
   res.json({ models });
 }));
 
-app.post('/api/select-model', asyncHandler(async (req, res) => {
-  const { provider, modelName } = req.body;
-  const success = await llm.selectLLM(provider as LLMProvider, modelName);
-  if (success) {
-    res.json({ message: 'Model selected successfully' });
-  } else {
-    res.status(500).json({ error: 'Failed to select model:', provider, modelName});
+app.post('/api/load-ollama-model', asyncHandler(async (req, res) => {
+  const { model } = req.body;
+  if (!model) {
+    res.status(400).json({ error: 'Model name is required' });
+    return;
+  }
+  try {
+    await llm.loadOllamaModel(model);
+    res.json({ message: 'Ollama model loaded successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to load Ollama model', details: error.message });
   }
 }));
 
 app.post('/api/infer', asyncHandler(async (req, res) => {
-  const { prompt, systemPrompt} = req.body;
-  const result = await llm.infer(prompt, systemPrompt);
-  res.json(result);
+  const { prompt, systemPrompt="", config } = req.body;
+  if (!prompt || !config) {
+    const wereNull = [];
+    if (!prompt) wereNull.push("prompt");
+    if (!config) wereNull.push("config");
+
+    res.status(400).json({ error: 'prompt, systemPrompt, and config are required; null items:' + JSON.stringify(wereNull) });
+    return;
+  }
+  try {
+    const result = await llm.infer(prompt, systemPrompt, config as LLMConfig);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: 'Inference failed', details: error.message });
+    console.error("Config used: ", config);
+  }
 }));
 
 app.use((error, req, res, next) => {
-  console.error('Error caught in middleware:', error);
-
   if (res.headersSent) {
     console.log('Headers already sent, passing to default error handler');
     return next(error);
@@ -45,7 +60,6 @@ app.use((error, req, res, next) => {
   const responseBody = {
     error: error.message || 'An unexpected error occurred'
   };
-  console.log('Sending error response:', responseBody);
 
   res.status(500).json(responseBody);
 });

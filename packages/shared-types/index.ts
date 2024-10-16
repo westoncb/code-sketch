@@ -7,6 +7,8 @@ export enum LLMProvider {
 export interface LLMConfig {
   provider: LLMProvider,
   model: string
+  temp: number
+  maxTokens: number
 }
 
 export interface InferenceResult {
