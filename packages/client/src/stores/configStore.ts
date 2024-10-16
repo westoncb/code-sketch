@@ -10,13 +10,13 @@ interface ConfigStore {
 }
 
 const defaultLLMConfigVals: LLMConfig = {
-  model: "none", provider: LLMProvider.Anthropic, temp: 0.5, maxTokens: 4096
+  model: undefined, provider: LLMProvider.Anthropic, temp: 0.5, maxTokens: 4096
 };
 
 const useConfigStore = create<ConfigStore>()(
   persist(
     (set, get) => ({
-      llmConfig: null,
+      llmConfig: defaultLLMConfigVals,
       setLLMConfig: async (config: LLMConfig) => {
         set({ llmConfig: {...defaultLLMConfigVals, ...config} });
       },

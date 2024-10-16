@@ -86,6 +86,10 @@ function SketchReview() {
   const [parsedContent, setParsedContent] = useState<ParsedContent[]>([]);
   const [questions, setQuestions] = useState<QuestionObject[]>([]);
 
+  // If we have a new review coming through, clear the old questions
+  useEffect(() => {
+    setQuestions([]);
+  }, [review]);
 
   const parseReview = useCallback(() => {
      if (!review) return;
@@ -178,10 +182,12 @@ function SketchReview() {
   const renderContent = (content: string) => {
     const lines = content.split('\n');
     return lines.map((line, index) => (
-      <React.Fragment key={index}>
-        {line}
-        {index < lines.length - 1}
-      </React.Fragment>
+      <pre key={index}>
+        <React.Fragment>
+          {line}
+          {index < lines.length - 1}
+        </React.Fragment>
+      </pre>
     ));
   };
 

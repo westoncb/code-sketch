@@ -30,9 +30,7 @@ ${codeSketchFormat}
 
   The following is a Code Sketch written by a developer that's ready for you to process:
 
-  <code_sketch>
-  ${sketch}
-  </code_sketch>`
+  ${sketch}`
 }
 
 export const genCodePrompt = (sketch: string, contextItems: ContextItem[]) => {
@@ -59,8 +57,6 @@ export const genReviewPrompt = (sketch: string, contextItems: ContextItem[]) => 
   —so that it's a standalone tag rather than a wrapping tag-pair.
 
   Don't ask questions about things you could likely work out for yourself: that's a core motivation of the user writing this system in the first place: they'd like for you to work out the details wherever possible. This review system is for getting at deeper potential design flaws. The highest value 'items' you can locate will likely relate to fundamental misconceptions or oversights, rather than code line-level 'nitpick' kinda things. Of course if an issue can be localized to a line you should use take advantage of the annotation system to highlight this. Additionally, the goal here is to improve what they've so far worked on describing rather than to expanding or 'enhancing' it.
-
-  Anything you write outside of the "<code_sketch>...</code_sketch>" tags will not be displayed to the user, so anything you want to communicate should be within <LLMQuestion question="..."> tags.
 
   Please generate your annotated review of the foregoing sketch now.
  `
