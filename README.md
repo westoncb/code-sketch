@@ -1,4 +1,6 @@
 # code-sketch
+
+![App Screenshot](code-sketch-screen.png)
  
 This is a prototype app for working with LLMs to refine "code sketches" and translate them into fully fleshed out code.
 
@@ -20,9 +22,11 @@ npm run
 The project uses NPM workspaces to create a monorepo for 3 packages: client, server, and shared-types. It's written primarily in Typescript with a Node/Express backend and a React frontend (built with Vite), and works with OpenAI, Anthropic, or local LLMs (via Ollama).
 
 # Usage guidelines
-Write or paste in a "code sketch" following the format of the example sketch the app loads with. Then click either "Review Sketch" or "Generate Code"; if you go for the review the LLM will check for ambiguities, inconsistencies etc in what you've described in your sketch and insert a number of follow up questions. From there you can have the LLM refine the sketch from your answers (or just take the questions into consideration and manually update your sketch—probably safest). If you feel your sketch is good to go, hit Generate Code—that's it.
+Click "LLM Config" to select the LLM you'd like to work with.
 
-...
+_Check out the example sketches in `sketch examples` if you're not sure what to put in your sketch—it's pretty open-ended though!_
+
+Write or paste in a "code sketch" following the format of the example sketch the app loads with; if you need to add additional contextual information for the LLM click the "+" button at the bottom and paste it in. Then click either "Review Sketch" or "Generate Code"; if you go for the review the LLM will check for ambiguities, inconsistencies etc in what you've described in your sketch and insert a number of follow up questions. From there you can have the LLM refine the sketch from your answers (or just take the questions into consideration and manually update your sketch—probably safest). If you feel your sketch is good to go, hit Generate Code—that's it.
 
 # Motivation
 
