@@ -31,39 +31,3 @@ body {
   display: flex;
   flex-direction: column;
 }
-
-/* Global button styles */
-.button {
-  background-color: var(--button-bg);
-  color: var(--button-text);
-  border: none;
-  padding: var(--spacing-small) var(--spacing-medium);
-  font-family: var(--font-family);
-  font-size: var(--font-size-normal);
-  cursor: pointer;
-  transition: background-color var(--transition-speed);
-}
-
-.button:hover {
-  background-color: var(--hover-bg);
-}
-
-/* CodeMirror global styles */
-.cm-editor {
-  height: 100%;
-  font-family: var(--font-family);
-}
-
-.cm-scroller {
-  overflow: auto;
-}
-
-.cm-gutters {
-  background-color: var(--panel-bg);
-  color: var(--text-color);
-  border-right: 1px solid var(--border-color);
-}
-
-.cm-activeLineGutter {
-  background-color: rgba(255, 255, 255, 0.1);
-}

@@ -226,7 +226,6 @@ class LLM {
 
   async cleanup(): Promise<void> {
     await this.unloadOllamaModel();
-    // Any other cleanup operations can be added here if needed in the future
   }
 }
 

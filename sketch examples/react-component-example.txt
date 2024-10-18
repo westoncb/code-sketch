@@ -1,0 +1,43 @@
+<code_sketch>
+  [overview]: This is to be a react component for displayed an LLM-annotated code-sketch review (yep, we're getting a bit meta here since this code will be used within the system in which you're participating—this is a dogfooding step). There is a "review" prop from the Zustand store that contains the LLM-generated review with comments expressed within tags like:
+
+  <LLMQuestion question="...">...</LLMQuestion>
+
+  or:
+
+  <LLMQuestion question="..."/>
+
+  The component (let's call it Review.tsx) will parse out these LLM-inserted question tags, extract the question and any wrapped content from their code-sketch (if applicable). We'll store those extracted props in an object, and use those objects to build up a display of the annoated document. The full document we display will be their original code sketch + these extracted question tags inserted at the correct locations.
+
+  The questions should appear in the document with the first line saying the name of the LLM model the user has configured for use (accessible in the Zustand store via llmConfig.model), followed by the question and any content which the tags wrapped. These should be clickable; when clicked the bottom should extend to show an input field along with okay and cancel buttons. If cancel is clicked it goes back to prior state. If okay is clicked we should insert the question tag back into the document with plain text plus a new attribute on the tag: userResponse=".." which should contain whatever the user entered into the input field.
+
+  [target_lang]: Typescript with jsx (tsx)
+  [custom_hints]: {
+      comments: terse but fairly complete
+  }
+
+  <sketch>
+    import Button from "./Button"
+    import useStore from "../stores/store"
+    import useConfigStore from "../stores/configStore"
+    // React imports
+
+    // define custom style objects here, using the provided CSS vars when appropriate
+
+    function SketchReview() { // this is the React component we're making
+        const {model} = useConfigStore((state) => state.llmConfig);
+        const {review} = useStore((state) -> state.review);
+        // should hold a local copy of the review that incorporates changes incurred by user giving input to the parsed LLM questions; this is what we'll copy into the "sketch" when "Send to sketch editor" is used.
+
+        // parse review and store question objects as long as review is non-empty
+
+        return
+
+            // main (scrollable) document component with parsed code sketch sections and question sections
+            // button panel that shows a status too: number of unanswered questions remaining
+             // contains a Button labeled "Send to sketch editor" (in useStore you can access sketch: string and setSketch(sketch: string) to make this button work)
+    }
+
+    // define a separate LLMQuestion react component to display the clickable parsed questions and the text input + okay/cancel buttons as described before. SketchReview will have to provide a function to this component for when "okay" is pressed, so that the document text can be updated.
+  </sketch>
+</code_sketch>

@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
-import axios, { AxiosError } from 'axios'
 import { LLMConfig, LLMProvider } from '@code-sketch/shared-types'
 
 interface ConfigStore {

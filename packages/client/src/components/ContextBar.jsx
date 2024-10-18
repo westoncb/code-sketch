@@ -87,13 +87,6 @@ const ContextBar = () => {
       scrollbarWidth: 'none', // Hide scrollbar in Firefox
     };
 
-    // Hide webkit scrollbar
-    const webkitScrollbarStyle = {
-      '&::-webkit-scrollbar': {
-        display: 'none',
-      },
-    };
-
     const contextItemStyle = {
       display: 'flex',
       alignItems: 'center',
@@ -110,7 +103,8 @@ const ContextBar = () => {
       maxWidth: '200px',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
-      flexShrink: 0, // Prevent items from shrinking
+      flexShrink: 0,
+      cursor: "pointer"
     };
 
     const removeButtonStyle = {
@@ -187,7 +181,7 @@ const ContextBar = () => {
         <textarea
                   tabIndex='0'
                   name="contextText"
-                  defaultValue={editingItem ? editingItem.text : ''}
+                  defaultValue={editingItem ? editingItem.content : ''}
                   placeholder="Enter additional context for the LLM"
                   style={{
                     height: '200px',  // Adjust this value as needed

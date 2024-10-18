@@ -72,7 +72,7 @@ function Sketch() {
     return '';
   };
 
-  const systemPrompt = "You are currently operating within the 'code-sketch' app. Your goal is to follow guidelines given in prompts, and to assist developers taking their 'sketches' to well thought out production quality code.";
+  const systemPrompt = "You are currently operating within the 'code-sketch' app. Your goal is to follow guidelines given in prompts, and to assist developers taking their 'sketches' to well thought out code.";
 
   const generateCode = async () => {
     try {

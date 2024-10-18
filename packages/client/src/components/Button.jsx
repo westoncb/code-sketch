@@ -14,7 +14,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    height: '32px', // Match the height of context items
+    height: '32px',
   },
 };
 
