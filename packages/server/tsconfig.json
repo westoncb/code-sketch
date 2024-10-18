@@ -11,7 +11,8 @@
     "noImplicitAny": false,
     "strictNullChecks": false,
     "checkJs": false,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "composite": true
   },
   "ts-node": {
     "esm": true,

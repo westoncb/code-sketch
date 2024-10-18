@@ -27,6 +27,6 @@ export const AnthropicModels = [
 export type AnthropicModel = typeof AnthropicModels[number];
 
 
-export const OpenAIModels = ['gpt-4o', 'gpt-4o-mini', 'gpt-4', 'gpt-4-turbo', 'o1-mini', 'o1-preview'];
+export const OpenAIModels = ['gpt-4o', 'gpt-4o-mini', 'gpt-4', 'gpt-4-turbo'];
 
 export type OpenAIModel = typeof OpenAIModels[number];

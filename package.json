@@ -11,14 +11,16 @@
     "start:client": "cd packages/client && npm run dev",
     "start:server": "cd packages/server && npm start",
     "open:client": "node -e \"setTimeout(() => require('open')('http://localhost:3001'), 3000)\"",
-    "build": "tsc -b",
+    "build": "tsc -b packages/shared-types packages/server && cd packages/client && npm run build",
     "build:shared-types": "tsc -b packages/shared-types",
     "postinstall": "npm run build"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.2",
     "npm-run-all": "^4.1.5",
     "open": "^8.4.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vite": "^5.4.9"
   },
   "dependencies": {
     "@codemirror/lang-css": "^6.3.0",

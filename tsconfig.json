@@ -12,6 +12,7 @@
   },
   "references": [
     { "path": "./packages/shared-types" },
-    { "path": "./packages/server" }
+    { "path": "./packages/server" },
+    { "path": "./packages/client" }
   ]
 }
