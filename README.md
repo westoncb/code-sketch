@@ -21,7 +21,7 @@ npm run
 
 The project uses NPM workspaces to create a monorepo for 3 packages: client, server, and shared-types. It's written primarily in Typescript with a Node/Express backend and a React frontend (built with Vite), and works with OpenAI, Anthropic, or local LLMs (via Ollama).
 
-# Usage guidelines
+# Usage
 Click "LLM Config" to select the LLM you'd like to work with.
 
 _Check out the example sketches in `sketch examples` if you're not sure what to put in your sketch—it's pretty open-ended though!_
