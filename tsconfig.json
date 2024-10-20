@@ -4,11 +4,9 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "strict": true,
-    "baseUrl": ".",
-    "paths": {
-      "@code-sketch/shared-types": ["packages/shared-types"]
-    }
+    "strict": false,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   },
   "references": [
     { "path": "./packages/shared-types" },

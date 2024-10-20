@@ -1,11 +1,12 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "private": true,
+  "private": false,
   "type": "module",
   "scripts": {
     "start": "node --loader ts-node/esm src/index.ts",
-    "dev": "nodemon --exec node --loader ts-node/esm src/index.ts"
+    "dev": "nodemon --exec node --loader ts-node/esm src/index.ts",
+    "build": "tsc"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.29.0",
@@ -21,6 +22,7 @@
     "@types/express": "^5.0.0",
     "@types/node": "^20.8.9",
     "nodemon": "^3.0.1",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
   }
 }

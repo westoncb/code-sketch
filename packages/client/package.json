@@ -1,7 +1,7 @@
 {
   "name": "client",
   "version": "1.0.0",
-  "private": true,
+  "private": false,
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +10,12 @@
   },
   "dependencies": {
     "@code-sketch/shared-types": "1.0.0",
+    "@codemirror/lang-css": "^6.3.0",
+    "@codemirror/lang-html": "^6.4.9",
+    "@codemirror/lang-java": "^6.0.1",
     "@codemirror/lang-javascript": "^6.2.2",
+    "@codemirror/lang-python": "^6.1.6",
+    "@codemirror/lang-rust": "^6.0.1",
     "@codemirror/theme-one-dark": "^6.1.2",
     "axios": "^1.7.7",
     "codemirror": "^6.0.1",
